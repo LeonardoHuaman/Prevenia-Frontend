@@ -23,19 +23,20 @@ function Login() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!validateForm()) return;
-    setLoading(true);
 
-    const formDetails = new URLSearchParams();
-    formDetails.append('username', email); // el backend espera 'username'
-    formDetails.append('password', password);
+    setLoading(true);
+    setError('');
 
     try {
-      const response = await fetch('http://localhost:8000/token', {
+      const response = await fetch('http://localhost:8000/login/doctor', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
+          'Content-Type': 'application/json',
         },
-        body: formDetails,
+        body: JSON.stringify({
+          correo: email,      
+          password: password,
+        }),
       });
 
       setLoading(false);
@@ -43,14 +44,15 @@ function Login() {
       if (response.ok) {
         const data = await response.json();
         localStorage.setItem('token', data.access_token);
-        navigate('/dashboard');
+        navigate('/home'); 
       } else {
         const errorData = await response.json();
         setError(errorData.detail || 'Authentication failed!');
       }
-    } catch (error) {
+    } catch (err) {
       setLoading(false);
       setError('An error occurred. Please try again later.');
+      console.error(err);
     }
   };
 
@@ -62,10 +64,12 @@ function Login() {
         <div className="input-field">
           <label className="input-label">Email:</label>
           <input
-            type="text"
+            type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="input-box"
+            placeholder="doctor@example.com"
+            required
           />
         </div>
         <div className="input-field">
@@ -75,6 +79,8 @@ function Login() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="input-box"
+            placeholder="••••••••"
+            required
           />
         </div>
         <button type="submit" disabled={loading} className="login-button">
