@@ -3,6 +3,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from './Pages/Login/Login';
 import Home from './Pages/Home/Home';         
+import Pacientes from './Pages/Pacientes/Pacientes';
 import ProtectedRoute from './Components/ProtectedRoute'; 
 function App() {
   return (
@@ -14,6 +15,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Home />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/pacientes"
+          element={
+            <ProtectedRoute>
+              <Pacientes />
             </ProtectedRoute>
           }
         />
